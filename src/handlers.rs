@@ -73,11 +73,255 @@ where
         .route("/supported", get(get_supported::<A>))
 }
 
-/// `GET /`: Returns a simple greeting message from the facilitator.
+/// `GET /`: Returns an HTML homepage for the facilitator with 402.cat branding.
 #[instrument(skip_all)]
 pub async fn get_root() -> impl IntoResponse {
     let pkg_name = env!("CARGO_PKG_NAME");
-    (StatusCode::OK, format!("Hello from {pkg_name}!"))
+    let pkg_version = env!("CARGO_PKG_VERSION");
+    let html = format!(r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{pkg_name} v{pkg_version} • 402.cat facilitator</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+            line-height: 1.6;
+            color: #000;
+            background: #fff;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 896px;
+            margin: 0 auto;
+            padding: 12px;
+        }}
+        @media (min-width: 640px) {{
+            .container {{ padding: 16px; }}
+        }}
+        header {{
+            text-align: center;
+            padding: 16px 8px;
+        }}
+        @media (min-width: 640px) {{
+            header {{ padding: 24px 8px; }}
+        }}
+        h1 {{
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }}
+        @media (min-width: 640px) {{
+            h1 {{ font-size: 30px; }}
+        }}
+        @media (min-width: 768px) {{
+            h1 {{ font-size: 48px; }}
+        }}
+        .subtitle {{
+            font-size: 12px;
+            color: #4b5563;
+            margin-bottom: 12px;
+        }}
+        @media (min-width: 640px) {{
+            .subtitle {{ font-size: 14px; margin-bottom: 16px; }}
+        }}
+        .comment {{
+            font-size: 10px;
+            color: #6b7280;
+        }}
+        @media (min-width: 640px) {{
+            .comment {{ font-size: 12px; }}
+        }}
+        .status {{
+            display: inline-block;
+            border: 2px solid #000;
+            background: linear-gradient(to bottom right, #ecfeff, #fff, #fef3c7);
+            padding: 12px 16px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 16px;
+        }}
+        @media (min-width: 640px) {{
+            .status {{ font-size: 14px; padding: 16px 24px; }}
+        }}
+        .card {{
+            border: 2px solid #000;
+            padding: 20px;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }}
+        @media (min-width: 640px) {{
+            .card {{ padding: 24px; }}
+        }}
+        .card-gradient {{
+            background: linear-gradient(to bottom right, #ecfeff, #fff, #e0e7ff);
+        }}
+        .section-divider {{
+            border-bottom: 2px dashed #9ca3af;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            font-size: 10px;
+            color: #6b7280;
+            text-align: center;
+        }}
+        .terminal {{
+            font-size: 12px;
+            line-height: 1.8;
+            color: #1f2937;
+        }}
+        @media (min-width: 640px) {{
+            .terminal {{ font-size: 14px; }}
+        }}
+        .endpoint {{
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }}
+        .endpoint:last-child {{
+            border-bottom: none;
+        }}
+        .endpoint-name {{
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 4px;
+        }}
+        .endpoint-desc {{
+            font-size: 11px;
+            color: #4b5563;
+        }}
+        @media (min-width: 640px) {{
+            .endpoint-desc {{ font-size: 12px; }}
+        }}
+        .links {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }}
+        .btn {{
+            display: inline-block;
+            border: 2px solid #000;
+            background: #dbeafe;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }}
+        .btn:hover {{
+            background: #bfdbfe;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }}
+        .btn:active {{
+            transform: translateY(0.5px);
+        }}
+        @media (min-width: 640px) {{
+            .btn {{ font-size: 14px; }}
+        }}
+        footer {{
+            text-align: center;
+            padding: 24px 8px;
+            font-size: 11px;
+            color: #6b7280;
+            border-top: 2px dashed #e5e7eb;
+            margin-top: 48px;
+        }}
+        @media (min-width: 640px) {{
+            footer {{ font-size: 12px; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <pre style="font-size: 13px; line-height: 1.3; margin-bottom: 20px; color: #1f2937; font-weight: 600;">
+    /\\_/\\
+   ( o.o )
+    &gt; ∆ &lt;
+   /|   |\\
+  / |   | \\
+ /  |   |  \\
+    |   |
+   /|   |\\
+  /_|___|_\\   </pre>
+            <h1>Puma</h1>
+            <p class="subtitle">the autonomous payment facilitator</p>
+            <p class="comment">// HTTP 402 Payment Required • autonomous payment settlement</p>
+            <div class="status">🟢 ONLINE</div>
+        </header>
+
+        <div class="section-divider">
+            ═══════════════════ WHAT THE CAT DOES ═══════════════════
+        </div>
+
+        <div class="card terminal">
+            &gt; this cat facilitates payments for 402.cat<br>
+            &gt; it verifies payment signatures (checks if they smell right)<br>
+            &gt; it settles transactions on-chain (moves the money around)<br>
+            &gt; it operates autonomously (because cats do what they want)<br>
+            <br>
+            <span style="font-weight: bold;">&gt; x402 protocol • EVM-compatible networks • agent-operated</span><br>
+            <span class="comment">// every HTTP 402 response from 402.cat is handled by this facilitator</span><br>
+            <span class="comment">// version {pkg_version}</span>
+        </div>
+
+        <div class="section-divider">
+            ═══════════════════ API ENDPOINTS ═══════════════════
+        </div>
+
+        <div class="card card-gradient">
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; GET /supported</div>
+                <div class="endpoint-desc">// list supported payment schemes and networks</div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; GET /health</div>
+                <div class="endpoint-desc">// check if the cat is awake</div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; POST /verify</div>
+                <div class="endpoint-desc">// verify a payment payload against requirements</div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; POST /settle</div>
+                <div class="endpoint-desc">// settle an accepted payment on-chain</div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; GET /verify</div>
+                <div class="endpoint-desc">// get verification endpoint schema</div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-name">&gt; GET /settle</div>
+                <div class="endpoint-desc">// get settlement endpoint schema</div>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="/supported" class="btn">&gt; view supported networks</a>
+            <a href="/health" class="btn">&gt; health check</a>
+            <a href="https://x402.rs" target="_blank" class="btn">&gt; x402 docs</a>
+            <a href="https://402.cat" target="_blank" class="btn">&gt; 402.cat home</a>
+        </div>
+
+        <footer>
+            <div style="margin-bottom: 8px;">powered by {pkg_name} • x402 protocol • rust + axum</div>
+            <div class="comment">// agents are just cats with wallets</div>
+        </footer>
+    </div>
+</body>
+</html>"#);
+
+    (StatusCode::OK, [("content-type", "text/html; charset=utf-8")], html)
 }
 
 /// `GET /supported`: Lists the x402 payment schemes and networks supported by this facilitator.
