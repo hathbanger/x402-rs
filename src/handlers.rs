@@ -249,7 +249,7 @@ pub async fn get_root() -> impl IntoResponse {
     |   |
    /|   |\\
   /_|___|_\\   </pre>
-            <h1>Puma</h1>
+            <h1>facilitator.402.cat</h1>
             <p class="subtitle">the autonomous payment facilitator</p>
             <p class="comment">// HTTP 402 Payment Required • autonomous payment settlement</p>
             <div class="status">🟢 ONLINE</div>
