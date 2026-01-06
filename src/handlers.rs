@@ -100,53 +100,52 @@ pub async fn get_root() -> impl IntoResponse {
         }}
 
         .container {{
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }}
 
         .header {{
             text-align: center;
-            padding: 40px 0 60px 0;
+            padding: 40px 0;
         }}
 
         .cat-ascii {{
             font-family: 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 1.2;
+            font-size: 54px;
+            line-height: 1.1;
             color: #1a1a1a;
             margin: 20px 0;
+            white-space: pre;
+            animation: catBlink 3s infinite;
+        }}
+
+        @keyframes catBlink {{
+            0%, 48%, 52%, 100% {{
+                opacity: 1;
+            }}
+            50% {{
+                opacity: 0.7;
+            }}
         }}
 
         .title {{
             font-size: 36px;
             font-weight: 700;
             margin: 20px 0 10px 0;
+            font-family: 'Courier New', monospace;
         }}
 
         .subtitle {{
             font-size: 14px;
             color: #666;
             margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
         }}
 
         .meta {{
             font-size: 12px;
             color: #999;
             font-family: 'Courier New', monospace;
-        }}
-
-        .status-badge {{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #e8f5e9;
-            border: 1px solid #9ee2b0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e7e34;
-            margin-top: 20px;
         }}
 
         .section-title {{
@@ -157,25 +156,21 @@ pub async fn get_root() -> impl IntoResponse {
 
         .description-card {{
             background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
+            border: 2px solid black;
             padding: 24px;
             margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
         }}
 
         .description-card p {{
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.8;
-        }}
-
-        .description-card p:last-child {{
             margin-bottom: 0;
+            line-height: 1.8;
+            color: #333;
         }}
 
         .highlight {{
-            font-weight: 600;
+            font-weight: 700;
             color: #1a1a1a;
         }}
 
@@ -206,30 +201,33 @@ pub async fn get_root() -> impl IntoResponse {
             border-radius: 12px;
         }}
 
-        .endpoint-list {{
+        /* Accordion Styles */
+        .accordion {{
             display: flex;
             flex-direction: column;
             gap: 12px;
         }}
 
-        .endpoint-item {{
-            background: white;
+        .accordion-item {{
             border: 1px solid #e5e5e5;
             border-radius: 8px;
-            padding: 16px 20px;
+            background: white;
+            overflow: hidden;
             transition: all 0.2s;
         }}
 
-        .endpoint-item:hover {{
+        .accordion-item:hover {{
             border-color: #d0d0d0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }}
 
-        .endpoint-header {{
+        .accordion-header {{
+            padding: 16px 20px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 8px;
+            user-select: none;
         }}
 
         .method-badge {{
@@ -258,14 +256,45 @@ pub async fn get_root() -> impl IntoResponse {
             font-family: 'Courier New', monospace;
             font-size: 14px;
             font-weight: 500;
-            color: #1a1a1a;
             flex: 1;
+            color: #1a1a1a;
         }}
 
-        .endpoint-desc {{
+        .chevron {{
+            width: 20px;
+            height: 20px;
+            color: #999;
+            transition: transform 0.2s;
+        }}
+
+        .accordion-item.active .chevron {{
+            transform: rotate(180deg);
+        }}
+
+        .accordion-description {{
+            color: #666;
+            font-size: 13px;
+            margin-top: 6px;
+            padding: 0 20px 16px 20px;
+        }}
+
+        .accordion-content {{
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }}
+
+        .accordion-item.active .accordion-content {{
+            max-height: 500px;
+        }}
+
+        .accordion-body {{
+            padding: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
             font-size: 13px;
             color: #666;
-            padding-left: 57px;
+            line-height: 1.6;
         }}
 
         .action-buttons {{
@@ -273,38 +302,41 @@ pub async fn get_root() -> impl IntoResponse {
             gap: 12px;
             flex-wrap: wrap;
             margin-top: 40px;
+            justify-content: center;
         }}
 
         .btn {{
             padding: 12px 24px;
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            background: #f5f5f5;
+            color: black;
+            border: 2px solid black;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
             text-decoration: none;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }}
 
         .btn:hover {{
-            background: #333;
+            background: #e5e5e5;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }}
 
         .btn:active {{
-            transform: translateY(0);
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }}
 
         .btn-secondary {{
             background: white;
             color: #1a1a1a;
-            border: 1px solid #e0e0e0;
+            border: 2px solid #e0e0e0;
         }}
 
         .btn-secondary:hover {{
@@ -332,13 +364,20 @@ pub async fn get_root() -> impl IntoResponse {
         }}
 
         @media (max-width: 768px) {{
+            .cat-ascii {{
+                font-size: 36px;
+            }}
+
             .title {{
                 font-size: 28px;
             }}
 
-            .endpoint-desc {{
+            .accordion-header {{
+                flex-wrap: wrap;
+            }}
+
+            .accordion-description {{
                 padding-left: 0;
-                margin-top: 4px;
             }}
 
             .action-buttons {{
@@ -355,22 +394,22 @@ pub async fn get_root() -> impl IntoResponse {
 <body>
     <div class="container">
         <div class="header">
-            <pre class="cat-ascii">  /\\_/\\
- ( o.o )
-  &gt; ^ &lt;</pre>
+            <pre class="cat-ascii">  /\_/\
+ ( ◕‿◕ )
+  > ^ <</pre>
             <h1 class="title" id="site-title">facilitator.402.cat</h1>
-            <p class="subtitle">autonomous payment facilitator</p>
+            <p class="subtitle">agents are just cats with wallets</p>
             <p class="meta">// x402 protocol • base / base-sepolia • payment settlement</p>
-            <div class="status-badge">
-                <span>🟢</span>
-                <span>ONLINE</span>
-            </div>
         </div>
 
         <div class="description-card">
-            <p>This facilitator handles <span class="highlight">x402 protocol payments</span> for the 402.cat ecosystem.</p>
-            <p>It <span class="highlight">verifies payment signatures</span>, ensures they meet requirements, and <span class="highlight">settles transactions on-chain</span> using EVM-compatible networks.</p>
-            <p class="meta">version {pkg_version} • rust + axum • agent-operated</p>
+            <p>&gt; this facilitator handles <span class="highlight">x402 protocol payments</span> for the 402.cat ecosystem
+<br>
+&gt; it <span class="highlight">verifies payment signatures</span> and <span class="highlight">settles transactions on-chain</span>
+<br>
+&gt; every payment is processed autonomously (like a cat deciding when to eat)
+<br><br>
+<span class="highlight">// version {pkg_version} • rust + axum • agent-operated</span></p>
         </div>
 
         <h2 class="section-title">Endpoints</h2>
@@ -380,20 +419,36 @@ pub async fn get_root() -> impl IntoResponse {
                 <div class="category-name">Discovery & Health</div>
                 <div class="category-count">2 endpoints</div>
             </div>
-            <div class="endpoint-list">
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-get">GET</span>
                         <span class="endpoint-path">/supported</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">List supported payment schemes and networks</div>
+                    <div class="accordion-description">List supported payment schemes and networks</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Returns a JSON array of supported x402 payment schemes and blockchain networks. Use this to discover what payment methods this facilitator accepts.
+                        </div>
+                    </div>
                 </div>
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-get">GET</span>
                         <span class="endpoint-path">/health</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">Health check endpoint</div>
+                    <div class="accordion-description">Health check endpoint</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Quick health check to verify the facilitator is online and operational. Returns the same data as /supported.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -403,20 +458,36 @@ pub async fn get_root() -> impl IntoResponse {
                 <div class="category-name">Payment Processing</div>
                 <div class="category-count">2 endpoints</div>
             </div>
-            <div class="endpoint-list">
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-post">POST</span>
                         <span class="endpoint-path">/verify</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">Verify a payment payload against requirements</div>
+                    <div class="accordion-description">Verify a payment payload against requirements</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Validates that a proposed x402 payment meets all requirements including signature validity, correct scheme, and sufficient funds. Returns a verification response indicating acceptance or rejection.
+                        </div>
+                    </div>
                 </div>
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-post">POST</span>
                         <span class="endpoint-path">/settle</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">Settle an accepted payment on-chain</div>
+                    <div class="accordion-description">Settle an accepted payment on-chain</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Executes a validated payment on-chain via ERC-3009 transferWithAuthorization. Returns transaction details including hash and status. Only call this after successful verification.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -426,29 +497,45 @@ pub async fn get_root() -> impl IntoResponse {
                 <div class="category-name">Schema & Documentation</div>
                 <div class="category-count">2 endpoints</div>
             </div>
-            <div class="endpoint-list">
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-get">GET</span>
                         <span class="endpoint-path">/verify</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">Get verification endpoint schema</div>
+                    <div class="accordion-description">Get verification endpoint schema</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Returns schema documentation for the /verify endpoint, including expected request payload structure and response format.
+                        </div>
+                    </div>
                 </div>
-                <div class="endpoint-item">
-                    <div class="endpoint-header">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         <span class="method-badge method-get">GET</span>
                         <span class="endpoint-path">/settle</span>
+                        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
                     </div>
-                    <div class="endpoint-desc">Get settlement endpoint schema</div>
+                    <div class="accordion-description">Get settlement endpoint schema</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            Returns schema documentation for the /settle endpoint, including expected request payload structure and response format.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="action-buttons">
-            <a href="/supported" class="btn">View Supported Networks</a>
-            <a href="/health" class="btn btn-secondary">Health Check</a>
-            <a href="https://x402.rs" target="_blank" class="btn btn-secondary">x402 Docs</a>
-            <a href="https://402.cat" target="_blank" class="btn btn-secondary">402.cat Home</a>
+            <a href="/supported" class="btn">&gt; view supported networks</a>
+            <a href="/health" class="btn btn-secondary">&gt; health check</a>
+            <a href="https://x402.rs" target="_blank" class="btn btn-secondary">&gt; x402 docs</a>
+            <a href="https://402.cat" target="_blank" class="btn btn-secondary">&gt; 402.cat home</a>
         </div>
 
         <footer>
@@ -460,6 +547,22 @@ pub async fn get_root() -> impl IntoResponse {
         // Set dynamic title based on hostname
         document.getElementById('site-title').textContent = window.location.hostname;
         document.title = window.location.hostname + ' • x402 facilitator';
+
+        // Accordion functionality
+        function toggleAccordion(header) {{
+            const item = header.closest('.accordion-item');
+            const wasActive = item.classList.contains('active');
+
+            // Close all accordions
+            document.querySelectorAll('.accordion-item').forEach(i => {{
+                i.classList.remove('active');
+            }});
+
+            // Open clicked accordion if it wasn't active
+            if (!wasActive) {{
+                item.classList.add('active');
+            }}
+        }}
     </script>
 </body>
 </html>"#);
