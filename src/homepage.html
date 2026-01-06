@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{pkg_name} v{pkg_version} • 402.cat facilitator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0 60px 0;
+        }
+
+        .cat-ascii {
+            font-family: 'Courier New', monospace;
+            font-size: 48px;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin: 20px 0;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+        }
+
+        .description-card {
+            background: white;
+            border: 2px solid black;
+            padding: 24px;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .description-card p {
+            margin-bottom: 0;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        /* Filter Bar */
+        .filter-container {
+            background: white;
+            border: 2px solid black;
+            border-radius: 0;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid black;
+            border-radius: 0;
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .category-filter {
+            padding: 8px 16px;
+            border: 2px solid black;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .category-filter:hover {
+            background: #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-filter.active {
+            background: black;
+            color: white;
+        }
+
+        .category-filter:active {
+            transform: translateY(2px);
+        }
+
+        /* Category Sections */
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: #999;
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .category-section.hidden {
+            display: none;
+        }
+
+        /* Accordion Styles */
+        .accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .accordion-item {
+            border: 2px solid black;
+            border-radius: 0;
+            background: white;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .method-badge {
+            padding: 4px 10px;
+            border-radius: 0;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            min-width: 45px;
+            text-align: center;
+            border: 2px solid;
+        }
+
+        .method-get {
+            background: #d4f4dd;
+            color: #1e7e34;
+            border-color: #1e7e34;
+        }
+
+        .method-post {
+            background: #d6e9ff;
+            color: #0052cc;
+            border-color: #0052cc;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            color: #1a1a1a;
+        }
+
+        .chevron {
+            width: 20px;
+            height: 20px;
+            color: #999;
+            transition: transform 0.2s;
+        }
+
+        .accordion-item.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .accordion-description {
+            color: #666;
+            font-size: 13px;
+            margin-top: 6px;
+            padding: 0 20px 16px 20px;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 2000px;
+        }
+
+        .accordion-body {
+            padding: 20px;
+            padding-top: 10px;
+            border-top: 2px solid black;
+        }
+
+        .accordion-body h4 {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            margin-top: 12px;
+            color: #1a1a1a;
+        }
+
+        .accordion-body h4:first-child {
+            margin-top: 0;
+        }
+
+        .accordion-body p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: #f5f5f5;
+            color: black;
+            border: 2px solid black;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background: #e5e5e5;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1a1a1a;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #fafafa;
+            border-color: #1a1a1a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 2px solid #e5e5e5;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-size: 11px;
+            color: #ccc;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .cat-ascii {
+                font-size: 32px;
+            }
+
+            .title {
+                font-size: 28px;
+            }
+
+            .accordion-header {
+                flex-wrap: wrap;
+            }
+
+            .accordion-description {
+                padding-left: 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <pre class="cat-ascii">  /\_/\
+ ( ◕‿◕ )
+  > ^ <</pre>
+            <h1 class="title" id="site-title">facilitator.402.cat</h1>
+            <p class="subtitle">agents are just cats with wallets</p>
+            <p class="meta">// x402 protocol • base / base-sepolia • payment settlement</p>
+        </div>
+
+        <div class="description-card">
+            <p>&gt; this facilitator handles <span class="highlight">x402 protocol payments</span> for the 402.cat ecosystem
+<br>&gt; it <span class="highlight">verifies payment signatures</span> and <span class="highlight">settles transactions on-chain</span>
+<br>&gt; every payment is processed autonomously (like a cat deciding when to eat)
+<br><br><span class="highlight">// version {pkg_version} • rust + axum • agent-operated</span></p>
+        </div>
+
+        <h2 class="section-title">x402 Endpoints</h2>
+
+        <div class="filter-container">
+            <input type="text" id="searchBar" class="search-bar" placeholder="&gt; search endpoints...">
+            <div class="category-filters" id="categoryFilters">
+                <div class="category-filter active" onclick="filterCategory('all')">All</div>
+                <div class="category-filter" onclick="filterCategory('Discovery')">Discovery</div>
+                <div class="category-filter" onclick="filterCategory('Payment')">Payment</div>
+                <div class="category-filter" onclick="filterCategory('Schema')">Schema</div>
+            </div>
+        </div>
+
+        <div id="endpoints-container"></div>
+
+        <div class="action-buttons">
+            <a href="/supported" class="btn">&gt; view supported networks</a>
+            <a href="/health" class="btn btn-secondary">&gt; health check</a>
+            <a href="https://x402.rs" target="_blank" class="btn btn-secondary">&gt; x402 docs</a>
+            <a href="https://402.cat" target="_blank" class="btn btn-secondary">&gt; 402.cat home</a>
+        </div>
+
+        <footer>
+            <div class="footer-text">powered by {pkg_name} • x402 protocol</div>
+            <div class="footer-tagline">// agents are just cats with wallets</div>
+        </footer>
+    </div>
+
+    <script>
+        const ENDPOINTS = [
+            {
+                method: 'GET',
+                path: '/supported',
+                category: 'Discovery',
+                description: 'List supported payment schemes and networks',
+                details: 'Returns a JSON array of supported x402 payment schemes, blockchain networks, and token addresses that this facilitator accepts.',
+                requestBody: null,
+                responseBody: `{
+  "schemes": [
+    {
+      "scheme": "exact",
+      "version": 2,
+      "network": "eip155:84532",
+      "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+    }
+  ]
+}`
+            },
+            {
+                method: 'GET',
+                path: '/health',
+                category: 'Discovery',
+                description: 'Health check endpoint',
+                details: 'Quick health check to verify the facilitator is online and operational. Returns the same data as /supported.',
+                requestBody: null,
+                responseBody: `{
+  "schemes": [...]
+}`
+            },
+            {
+                method: 'POST',
+                path: '/verify',
+                category: 'Payment',
+                description: 'Verify a payment payload against requirements',
+                details: 'Validates that a proposed x402 payment meets all requirements including signature validity, correct scheme, and sufficient funds. Returns a verification response indicating acceptance or rejection.',
+                requestBody: `{
+  "paymentPayload": {
+    "x402Version": 2,
+    "scheme": "exact",
+    "network": "eip155:84532",
+    "payload": {
+      "signature": "0x...",
+      "authorization": {
+        "from": "0x...",
+        "to": "0x...",
+        "value": "10000",
+        "validAfter": "1234567890",
+        "validBefore": "1234567890",
+        "nonce": "0x..."
+      }
+    }
+  },
+  "paymentRequirements": {
+    "maxAmountRequired": "10000",
+    "payTo": "0x...",
+    "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    "network": "eip155:84532"
+  }
+}`,
+                responseBody: `{
+  "isValid": true,
+  "payer": "0x..."
+}`
+            },
+            {
+                method: 'POST',
+                path: '/settle',
+                category: 'Payment',
+                description: 'Settle an accepted payment on-chain',
+                details: 'Executes a validated payment on-chain via ERC-3009 transferWithAuthorization. Returns transaction details including hash and status. Only call this after successful verification.',
+                requestBody: `{
+  "paymentPayload": {...},
+  "paymentRequirements": {...}
+}`,
+                responseBody: `{
+  "success": true,
+  "network": "eip155:84532",
+  "transaction": "0x...",
+  "payer": "0x..."
+}`
+            },
+            {
+                method: 'GET',
+                path: '/verify',
+                category: 'Schema',
+                description: 'Get verification endpoint schema',
+                details: 'Returns schema documentation for the /verify endpoint, including expected request payload structure and response format.',
+                requestBody: null,
+                responseBody: `{
+  "endpoint": "/verify",
+  "description": "POST to verify x402 payments",
+  "body": {
+    "paymentPayload": "PaymentPayload",
+    "paymentRequirements": "PaymentRequirements"
+  }
+}`
+            },
+            {
+                method: 'GET',
+                path: '/settle',
+                category: 'Schema',
+                description: 'Get settlement endpoint schema',
+                details: 'Returns schema documentation for the /settle endpoint, including expected request payload structure and response format.',
+                requestBody: null,
+                responseBody: `{
+  "endpoint": "/settle",
+  "description": "POST to settle x402 payments",
+  "body": {
+    "paymentPayload": "PaymentPayload",
+    "paymentRequirements": "PaymentRequirements"
+  }
+}`
+            }
+        ];
+
+        function renderEndpoints() {
+            const container = document.getElementById('endpoints-container');
+            const categories = [...new Set(ENDPOINTS.map(e => e.category))];
+
+            const grouped = {};
+            categories.forEach(cat => {
+                grouped[cat] = ENDPOINTS.filter(e => e.category === cat);
+            });
+
+            container.innerHTML = categories.map(category => {
+                const endpoints = grouped[category];
+                const endpointsHTML = endpoints.map((endpoint, idx) => {
+                    const methodClass = endpoint.method === 'GET' ? 'method-get' : 'method-post';
+
+                    let bodyHTML = `<p>${endpoint.details}</p>`;
+                    if (endpoint.requestBody) {
+                        bodyHTML += `
+                            <h4>&gt; Request Body</h4>
+                            <div class="code-block">${endpoint.requestBody}</div>
+                        `;
+                    }
+                    if (endpoint.responseBody) {
+                        bodyHTML += `
+                            <h4>&gt; Response Body</h4>
+                            <div class="code-block">${endpoint.responseBody}</div>
+                        `;
+                    }
+
+                    return `
+                        <div class="accordion-item" data-endpoint="${endpoint.path}" data-category="${endpoint.category}" data-description="${endpoint.description.toLowerCase()}">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <span class="method-badge ${methodClass}">${endpoint.method}</span>
+                                <span class="endpoint-path">${endpoint.path}</span>
+                                <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <div class="accordion-description">${endpoint.description}</div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    ${bodyHTML}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="category-section" data-category="${category}">
+                        <div class="category-header">
+                            <div class="category-name">${category}</div>
+                            <div class="category-count">${endpoints.length} endpoint${endpoints.length !== 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="accordion">
+                            ${endpointsHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        let currentCategory = 'all';
+
+        function filterCategory(category) {
+            currentCategory = category;
+
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.classList.remove('active');
+                if ((category === 'all' && btn.textContent === 'All') || btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.category-section').forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            const searchTerm = document.getElementById('searchBar').value;
+            if (searchTerm) {
+                filterEndpoints(searchTerm);
+            }
+        }
+
+        function filterEndpoints(searchTerm) {
+            const term = searchTerm.toLowerCase();
+
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const path = item.dataset.endpoint.toLowerCase();
+                const description = item.dataset.description;
+                const category = item.dataset.category;
+
+                const matchesSearch = !term || path.includes(term) || description.includes(term);
+                const matchesCategory = currentCategory === 'all' || category === currentCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.category-section').forEach(section => {
+                const category = section.dataset.category;
+                const visibleCount = section.querySelectorAll('.accordion-item:not([style*="display: none"])').length;
+                const countBadge = section.querySelector('.category-count');
+                countBadge.textContent = `${visibleCount} endpoint${visibleCount !== 1 ? 's' : ''}`;
+
+                if (visibleCount === 0) {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = '';
+                }
+            });
+        }
+
+        function toggleAccordion(header) {
+            const item = header.closest('.accordion-item');
+            const wasActive = item.classList.contains('active');
+
+            document.querySelectorAll('.accordion-item').forEach(i => {
+                i.classList.remove('active');
+            });
+
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Initialize
+        document.getElementById('site-title').textContent = window.location.hostname;
+        document.title = window.location.hostname + ' • x402 facilitator';
+        renderEndpoints();
+
+        // Setup search
+        document.getElementById('searchBar').addEventListener('input', (e) => {
+            filterEndpoints(e.target.value);
+        });
+    </script>
+</body>
+</html>
