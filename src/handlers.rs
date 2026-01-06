@@ -85,239 +85,382 @@ pub async fn get_root() -> impl IntoResponse {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{pkg_name} v{pkg_version} • 402.cat facilitator</title>
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
         body {{
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
             line-height: 1.6;
-            color: #000;
-            background: #fff;
-            min-height: 100vh;
+            padding: 20px;
         }}
+
         .container {{
-            max-width: 896px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 12px;
         }}
-        @media (min-width: 640px) {{
-            .container {{ padding: 16px; }}
-        }}
-        header {{
+
+        .header {{
             text-align: center;
-            padding: 16px 8px;
+            padding: 40px 0 60px 0;
         }}
-        @media (min-width: 640px) {{
-            header {{ padding: 24px 8px; }}
+
+        .cat-ascii {{
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin: 20px 0;
         }}
-        h1 {{
-            font-size: 24px;
-            font-weight: bold;
+
+        .title {{
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+        }}
+
+        .subtitle {{
+            font-size: 14px;
+            color: #666;
             margin-bottom: 8px;
         }}
-        @media (min-width: 640px) {{
-            h1 {{ font-size: 30px; }}
-        }}
-        @media (min-width: 768px) {{
-            h1 {{ font-size: 48px; }}
-        }}
-        .subtitle {{
+
+        .meta {{
             font-size: 12px;
-            color: #4b5563;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }}
+
+        .status-badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #e8f5e9;
+            border: 1px solid #9ee2b0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e7e34;
+            margin-top: 20px;
+        }}
+
+        .section-title {{
+            font-size: 24px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+        }}
+
+        .description-card {{
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }}
+
+        .description-card p {{
+            font-size: 14px;
+            color: #666;
             margin-bottom: 12px;
+            line-height: 1.8;
         }}
-        @media (min-width: 640px) {{
-            .subtitle {{ font-size: 14px; margin-bottom: 16px; }}
+
+        .description-card p:last-child {{
+            margin-bottom: 0;
         }}
-        .comment {{
-            font-size: 10px;
-            color: #6b7280;
+
+        .highlight {{
+            font-weight: 600;
+            color: #1a1a1a;
         }}
-        @media (min-width: 640px) {{
-            .comment {{ font-size: 12px; }}
+
+        .category-section {{
+            margin-bottom: 40px;
         }}
-        .status {{
-            display: inline-block;
-            border: 2px solid #000;
-            background: linear-gradient(to bottom right, #ecfeff, #fff, #fef3c7);
-            padding: 12px 16px;
-            font-weight: bold;
-            font-size: 12px;
-            margin-top: 16px;
-        }}
-        @media (min-width: 640px) {{
-            .status {{ font-size: 14px; padding: 16px 24px; }}
-        }}
-        .card {{
-            border: 2px solid #000;
-            padding: 20px;
+
+        .category-header {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 16px;
-            background: #fafafa;
-        }}
-        @media (min-width: 640px) {{
-            .card {{ padding: 24px; }}
-        }}
-        .card-gradient {{
-            background: linear-gradient(to bottom right, #ecfeff, #fff, #e0e7ff);
-        }}
-        .section-divider {{
-            border-bottom: 2px dashed #9ca3af;
             padding-bottom: 12px;
-            margin-bottom: 24px;
-            font-size: 10px;
-            color: #6b7280;
+            border-bottom: 2px solid #f0f0f0;
+        }}
+
+        .category-name {{
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }}
+
+        .category-count {{
+            font-size: 12px;
+            color: #999;
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }}
+
+        .endpoint-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+
+        .endpoint-item {{
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px 20px;
+            transition: all 0.2s;
+        }}
+
+        .endpoint-item:hover {{
+            border-color: #d0d0d0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }}
+
+        .endpoint-header {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }}
+
+        .method-badge {{
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            min-width: 45px;
             text-align: center;
         }}
-        .terminal {{
-            font-size: 12px;
-            line-height: 1.8;
-            color: #1f2937;
+
+        .method-get {{
+            background: #d4f4dd;
+            color: #1e7e34;
+            border: 1px solid #9ee2b0;
         }}
-        @media (min-width: 640px) {{
-            .terminal {{ font-size: 14px; }}
+
+        .method-post {{
+            background: #d6e9ff;
+            color: #0052cc;
+            border: 1px solid #a3cfff;
         }}
-        .endpoint {{
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e5e7eb;
+
+        .endpoint-path {{
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            flex: 1;
         }}
-        .endpoint:last-child {{
-            border-bottom: none;
-        }}
-        .endpoint-name {{
-            font-weight: bold;
-            color: #047857;
-            margin-bottom: 4px;
-        }}
+
         .endpoint-desc {{
-            font-size: 11px;
-            color: #4b5563;
+            font-size: 13px;
+            color: #666;
+            padding-left: 57px;
         }}
-        @media (min-width: 640px) {{
-            .endpoint-desc {{ font-size: 12px; }}
-        }}
-        .links {{
+
+        .action-buttons {{
             display: flex;
-            flex-wrap: wrap;
             gap: 12px;
-            margin-top: 24px;
+            flex-wrap: wrap;
+            margin-top: 40px;
         }}
+
         .btn {{
-            display: inline-block;
-            border: 2px solid #000;
-            background: #dbeafe;
-            padding: 12px 16px;
+            padding: 12px 24px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
             text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            font-size: 12px;
+            cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }}
+
         .btn:hover {{
-            background: #bfdbfe;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }}
+
         .btn:active {{
-            transform: translateY(0.5px);
+            transform: translateY(0);
         }}
-        @media (min-width: 640px) {{
-            .btn {{ font-size: 14px; }}
+
+        .btn-secondary {{
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
         }}
+
+        .btn-secondary:hover {{
+            background: #fafafa;
+            border-color: #1a1a1a;
+        }}
+
         footer {{
             text-align: center;
-            padding: 24px 8px;
-            font-size: 11px;
-            color: #6b7280;
-            border-top: 2px dashed #e5e7eb;
-            margin-top: 48px;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 1px solid #e5e5e5;
         }}
-        @media (min-width: 640px) {{
-            footer {{ font-size: 12px; }}
+
+        .footer-text {{
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }}
+
+        .footer-tagline {{
+            font-size: 11px;
+            color: #ccc;
+            font-family: 'Courier New', monospace;
+        }}
+
+        @media (max-width: 768px) {{
+            .title {{
+                font-size: 28px;
+            }}
+
+            .endpoint-desc {{
+                padding-left: 0;
+                margin-top: 4px;
+            }}
+
+            .action-buttons {{
+                flex-direction: column;
+            }}
+
+            .btn {{
+                width: 100%;
+                justify-content: center;
+            }}
         }}
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <pre style="font-size: 13px; line-height: 1.3; margin-bottom: 20px; color: #1f2937; font-weight: 600;">
-    /\\_/\\
-   ( o.o )
-    &gt; ∆ &lt;
-   /|   |\\
-  / |   | \\
- /  |   |  \\
-    |   |
-   /|   |\\
-  /_|___|_\\   </pre>
-            <h1>facilitator.402.cat</h1>
-            <p class="subtitle">the autonomous payment facilitator</p>
-            <p class="comment">// HTTP 402 Payment Required • autonomous payment settlement</p>
-            <div class="status">🟢 ONLINE</div>
-        </header>
-
-        <div class="section-divider">
-            ═══════════════════ WHAT THE CAT DOES ═══════════════════
-        </div>
-
-        <div class="card terminal">
-            &gt; this cat facilitates payments for 402.cat<br>
-            &gt; it verifies payment signatures (checks if they smell right)<br>
-            &gt; it settles transactions on-chain (moves the money around)<br>
-            &gt; it operates autonomously (because cats do what they want)<br>
-            <br>
-            <span style="font-weight: bold;">&gt; x402 protocol • EVM-compatible networks • agent-operated</span><br>
-            <span class="comment">// every HTTP 402 response from 402.cat is handled by this facilitator</span><br>
-            <span class="comment">// version {pkg_version}</span>
-        </div>
-
-        <div class="section-divider">
-            ═══════════════════ API ENDPOINTS ═══════════════════
-        </div>
-
-        <div class="card card-gradient">
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; GET /supported</div>
-                <div class="endpoint-desc">// list supported payment schemes and networks</div>
-            </div>
-
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; GET /health</div>
-                <div class="endpoint-desc">// check if the cat is awake</div>
-            </div>
-
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; POST /verify</div>
-                <div class="endpoint-desc">// verify a payment payload against requirements</div>
-            </div>
-
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; POST /settle</div>
-                <div class="endpoint-desc">// settle an accepted payment on-chain</div>
-            </div>
-
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; GET /verify</div>
-                <div class="endpoint-desc">// get verification endpoint schema</div>
-            </div>
-
-            <div class="endpoint">
-                <div class="endpoint-name">&gt; GET /settle</div>
-                <div class="endpoint-desc">// get settlement endpoint schema</div>
+        <div class="header">
+            <pre class="cat-ascii">  /\\_/\\
+ ( o.o )
+  &gt; ^ &lt;</pre>
+            <h1 class="title" id="site-title">facilitator.402.cat</h1>
+            <p class="subtitle">autonomous payment facilitator</p>
+            <p class="meta">// x402 protocol • base / base-sepolia • payment settlement</p>
+            <div class="status-badge">
+                <span>🟢</span>
+                <span>ONLINE</span>
             </div>
         </div>
 
-        <div class="links">
-            <a href="/supported" class="btn">&gt; view supported networks</a>
-            <a href="/health" class="btn">&gt; health check</a>
-            <a href="https://x402.rs" target="_blank" class="btn">&gt; x402 docs</a>
-            <a href="https://402.cat" target="_blank" class="btn">&gt; 402.cat home</a>
+        <div class="description-card">
+            <p>This facilitator handles <span class="highlight">x402 protocol payments</span> for the 402.cat ecosystem.</p>
+            <p>It <span class="highlight">verifies payment signatures</span>, ensures they meet requirements, and <span class="highlight">settles transactions on-chain</span> using EVM-compatible networks.</p>
+            <p class="meta">version {pkg_version} • rust + axum • agent-operated</p>
+        </div>
+
+        <h2 class="section-title">Endpoints</h2>
+
+        <div class="category-section">
+            <div class="category-header">
+                <div class="category-name">Discovery & Health</div>
+                <div class="category-count">2 endpoints</div>
+            </div>
+            <div class="endpoint-list">
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/supported</span>
+                    </div>
+                    <div class="endpoint-desc">List supported payment schemes and networks</div>
+                </div>
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/health</span>
+                    </div>
+                    <div class="endpoint-desc">Health check endpoint</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-header">
+                <div class="category-name">Payment Processing</div>
+                <div class="category-count">2 endpoints</div>
+            </div>
+            <div class="endpoint-list">
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/verify</span>
+                    </div>
+                    <div class="endpoint-desc">Verify a payment payload against requirements</div>
+                </div>
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/settle</span>
+                    </div>
+                    <div class="endpoint-desc">Settle an accepted payment on-chain</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-header">
+                <div class="category-name">Schema & Documentation</div>
+                <div class="category-count">2 endpoints</div>
+            </div>
+            <div class="endpoint-list">
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/verify</span>
+                    </div>
+                    <div class="endpoint-desc">Get verification endpoint schema</div>
+                </div>
+                <div class="endpoint-item">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/settle</span>
+                    </div>
+                    <div class="endpoint-desc">Get settlement endpoint schema</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/supported" class="btn">View Supported Networks</a>
+            <a href="/health" class="btn btn-secondary">Health Check</a>
+            <a href="https://x402.rs" target="_blank" class="btn btn-secondary">x402 Docs</a>
+            <a href="https://402.cat" target="_blank" class="btn btn-secondary">402.cat Home</a>
         </div>
 
         <footer>
-            <div style="margin-bottom: 8px;">powered by {pkg_name} • x402 protocol • rust + axum</div>
-            <div class="comment">// agents are just cats with wallets</div>
+            <div class="footer-text">powered by {pkg_name} • x402 protocol</div>
+            <div class="footer-tagline">// agents are just cats with wallets</div>
         </footer>
     </div>
+    <script>
+        // Set dynamic title based on hostname
+        document.getElementById('site-title').textContent = window.location.hostname;
+        document.title = window.location.hostname + ' • x402 facilitator';
+    </script>
 </body>
 </html>"#);
 
